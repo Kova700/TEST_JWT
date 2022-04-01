@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
         binding.lifecycleOwner = this
+        binding.activity = this
 
     }
     fun openWiewView(loginType : LoginType){
@@ -28,14 +29,14 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "MainActivity: openWiewView_KAKAO() - called")
                 //WebViewActivity로 이동
                 val intent = Intent(this,LoginWebViewActivity::class.java)
-                intent.putExtra("URI","http://172.30.1.14:8080/oauth2/authorize/kakao")
+                intent.putExtra("URI","https://www.daum.net/")
                 startActivity(intent)
             }
             LoginType.GOOGLE ->{
                 Log.d(TAG, "MainActivity_GOOGLE() - called")
                 //WebViewActivity로 이동
                 val intent = Intent(this,LoginWebViewActivity::class.java)
-                intent.putExtra("URI","http://10.0.2.2:8080/oauth2/authorize/google")
+                intent.putExtra("URI","https://www.google.com/")
                 startActivity(intent)
             }
         }
