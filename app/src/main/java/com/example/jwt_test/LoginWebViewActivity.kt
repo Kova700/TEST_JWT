@@ -2,6 +2,7 @@ package com.example.jwt_test
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.http.SslError
@@ -54,6 +55,8 @@ class LoginWebViewActivity : AppCompatActivity() {
         val uri = intent.getStringExtra("URI")
 
         if (uri != null) {
+            var onLoadResource_count = 0
+
             //웹뷰 설정
             binding.loginWebView.apply {
                 binding.loginWebView.webViewClient = object : WebViewClient() {
@@ -71,17 +74,27 @@ class LoginWebViewActivity : AppCompatActivity() {
                         Log.d(TAG, "LoginWebViewActivity: onLoadResource_url = $url")
 
                         if (url != null) {
-                            if(url.contains("token:")){
+                            //임시로 thumb 적어둠
+                            if(url.contains("thumb")){
+                                
+                                //토큰 추출
                                 val token = url.substring(6)
                                 Log.d(TAG, "LoginWebViewActivity: _token = $token")
 
-                                //SharedPreference에 토큰 저장 후 웹뷰 닫기
+                                //SharedPreference에 토큰 저장
                                 var pref = this@LoginWebViewActivity.getSharedPreferences("token", Context.MODE_PRIVATE)
                                 var editor = pref.edit()
                                 editor.putString("token","$token")
                                 editor.apply()
                                 Log.d(TAG, "LoginWebViewActivity: onLoadResource()_checkPref = ${pref.getString("token","notToken")}")
-                                finish()
+                                onLoadResource_count++
+
+                                if(onLoadResource_count == 1){
+                                    //MainActivity로 이동
+                                    val intent = Intent(this@LoginWebViewActivity,MainActivity::class.java)
+                                    startActivity(intent)
+                                    this@LoginWebViewActivity.finish()
+                                }
                             }
                         }
                         super.onLoadResource(view, url)
@@ -154,10 +167,6 @@ class LoginWebViewActivity : AppCompatActivity() {
                         }.start()
                         return super.shouldOverrideUrlLoading(view, request)
                     }
-
-
-
-
                 }
                 settings.javaScriptEnabled = true
             }
